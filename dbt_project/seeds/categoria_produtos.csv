@@ -1,0 +1,9 @@
+categoria_id,categoria_nome,categoria_descricao,margem_padrao,is_ativo
+1,Eletrônicos,Produtos eletrônicos e tecnologia,0.25,true
+2,Roupas,Vestuário e acessórios,0.40,true
+3,Casa e Jardim,Produtos para casa e jardinagem,0.30,true
+4,Esportes,Artigos esportivos e fitness,0.35,true
+5,Livros,Livros e material educativo,0.20,true
+6,Beleza,Produtos de beleza e cuidados pessoais,0.45,true
+7,Automotivo,Peças e acessórios automotivos,0.28,true
+8,Brinquedos,Brinquedos e jogos,0.38,true

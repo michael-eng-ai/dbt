@@ -1,0 +1,60 @@
+meu_projeto_dbt_riocard:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: admin
+      password: admin
+      port: 5430
+      dbname: db_source
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public"
+    
+    # Target para quando Airbyte estiver configurado
+    target_cdc:
+      type: postgres
+      host: localhost
+      user: admin
+      password: admin
+      port: 5431
+      dbname: db_target
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public"
+
+# Profile padrão para compatibilidade
+default:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: admin
+      password: admin
+      port: 5430
+      dbname: db_source
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public"
+    
+    # Target para quando Airbyte estiver configurado
+    target_cdc:
+      type: postgres
+      host: localhost
+      user: admin
+      password: admin
+      port: 5431
+      dbname: db_target
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public" 

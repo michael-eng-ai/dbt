@@ -1,0 +1,8 @@
+status_code,status_name,status_category,status_description,is_active
+1,Ativo,Válido,Cliente ativo no sistema,true
+2,Inativo,Inválido,Cliente temporariamente inativo,false
+3,Suspenso,Pendente,Cliente com pendências financeiras,false
+4,Bloqueado,Inválido,Cliente bloqueado por violação de termos,false
+5,Prospect,Válido,Cliente em potencial,true
+6,VIP,Válido,Cliente VIP com benefícios especiais,true
+7,Cancelado,Inválido,Cliente que cancelou a conta,false

@@ -1,0 +1,59 @@
+version: 2
+
+sources:
+  - name: public
+    description: "Schema público do banco de dados de origem."
+    tables:
+      - name: clientes
+        description: "Tabela de clientes."
+      - name: pedidos
+        description: "Tabela de pedidos."
+      - name: produtos
+        description: "Tabela de produtos."
+      - name: itens_pedido
+        description: "Tabela de itens do pedido."
+      - name: campanhas_marketing
+        description: "Tabela de campanhas de marketing."
+      - name: leads
+        description: "Tabela de leads."
+
+models:
+  - name: bronze_clientes
+    description: "Modelo bronze para a tabela de clientes."
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+
+  - name: bronze_pedidos
+    description: "Modelo bronze para a tabela de pedidos."
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+
+  - name: bronze_produtos
+    description: "Modelo bronze para a tabela de produtos."
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+
+  - name: bronze_itens_pedidos
+    description: "Modelo bronze para a tabela de itens do pedido."
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+
+  - name: bronze_leads
+    description: "Modelo bronze para a tabela de leads."
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null

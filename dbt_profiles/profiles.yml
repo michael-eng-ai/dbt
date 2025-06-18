@@ -1,0 +1,51 @@
+# dbt_profiles/profiles.yml
+# ============================================================================
+# Configuração DBT com credenciais padronizadas admin/admin
+# Conecta diretamente ao banco SOURCE para POC local sem Airbyte
+
+meu_projeto_dbt_riocard:
+  target: dev
+  outputs:
+    dev:
+      type: "{{ env_var('DBT_TARGET_TYPE', 'postgres') }}"
+      host: "{{ env_var('DBT_TARGET_HOST', 'postgres_source') }}"
+      user: "{{ env_var('DBT_TARGET_USER', 'admin') }}"
+      password: "{{ env_var('DBT_TARGET_PASSWORD', 'admin') }}"
+      port: "{{ env_var('DBT_TARGET_PORT', '5432') | as_number }}"
+      dbname: "{{ env_var('DBT_TARGET_DB', 'db_source') }}"
+      schema: "{{ env_var('DBT_TARGET_SCHEMA', 'public') }}"
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public"
+
+    # Configuração para ambiente de produção (mesmas credenciais por simplicidade)
+    prod:
+      type: "{{ env_var('DBT_TARGET_TYPE', 'postgres') }}"
+      host: "{{ env_var('DBT_TARGET_HOST', 'postgres_source') }}"
+      user: "{{ env_var('DBT_TARGET_USER', 'admin') }}"
+      password: "{{ env_var('DBT_TARGET_PASSWORD', 'admin') }}"
+      port: "{{ env_var('DBT_TARGET_PORT', '5432') | as_number }}"
+      dbname: "{{ env_var('DBT_TARGET_DB', 'db_source') }}"
+      schema: "{{ env_var('DBT_TARGET_SCHEMA', 'public') }}"
+      threads: 8
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public"
+
+# Configuração alternativa usando nome default (para compatibilidade)
+default:
+  target: dev
+  outputs:
+    dev:
+      type: "{{ env_var('DBT_TARGET_TYPE', 'postgres') }}"
+      host: "{{ env_var('DBT_TARGET_HOST', 'postgres_source') }}"
+      user: "{{ env_var('DBT_TARGET_USER', 'admin') }}"
+      password: "{{ env_var('DBT_TARGET_PASSWORD', 'admin') }}"
+      port: "{{ env_var('DBT_TARGET_PORT', '5432') | as_number }}"
+      dbname: "{{ env_var('DBT_TARGET_DB', 'db_source') }}"
+      schema: "{{ env_var('DBT_TARGET_SCHEMA', 'public') }}"
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: "public"

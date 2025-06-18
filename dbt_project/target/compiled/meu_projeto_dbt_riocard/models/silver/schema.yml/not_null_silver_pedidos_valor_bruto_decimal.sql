@@ -1,0 +1,11 @@
+
+    
+    
+
+
+
+select valor_bruto_decimal
+from "db_source"."public_silver"."silver_pedidos"
+where valor_bruto_decimal is null
+
+

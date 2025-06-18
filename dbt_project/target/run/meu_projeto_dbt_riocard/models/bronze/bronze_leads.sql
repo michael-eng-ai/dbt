@@ -1,0 +1,38 @@
+
+  create view "db_source"."public_bronze"."bronze_leads__dbt_tmp"
+    
+    
+  as (
+    -- models/bronze/bronze_leads.sql
+-- Camada Bronze: Dados brutos de leads do CRM
+
+
+
+-- Bronze: Dados brutos de leads diretamente do source (replicado via Airbyte CDC)
+-- Prospects de vendas com informações de qualificação
+SELECT 
+    id,
+    nome,
+    email,
+    telefone,
+    empresa,
+    cargo,
+    fonte,
+    campanha_id,
+    score,
+    status,
+    interesse,
+    orcamento_estimado,
+    data_contato,
+    data_conversao,
+    observacoes,
+    tags,
+    ultima_atividade,
+    updated_at,
+    created_by,
+    version,
+    -- Metadados para auditoria CDC
+    updated_at as ultima_modificacao_fonte
+FROM "db_source"."public"."leads"
+WHERE nome IS NOT NULL  -- Validação básica: lead deve ter nome
+  );

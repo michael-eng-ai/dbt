@@ -1,0 +1,115 @@
+# Exposures - Documentação de Dashboards e APIs que consomem dados do DBT
+# Permite rastrear o impacto de mudanças nos modelos
+
+exposures:
+  - name: dashboard_vendas_executivo
+    type: dashboard
+    maturity: high
+    url: "https://dashboard.empresa.com/vendas-executivo"
+    description: >
+      Dashboard executivo de vendas usado pela diretoria para acompanhar
+      KPIs principais como receita, número de pedidos e performance por cliente.
+      Atualizado em tempo real e usado em reuniões estratégicas.
+    
+    depends_on:
+      - ref('gold_visao_geral_clientes')
+      - ref('agg_valor_pedidos_por_cliente_mensal')
+      - ref('fct_pedidos')
+    
+    owner:
+      name: "Equipe Analytics"
+      email: "analytics@empresa.com"
+    
+    tags: ["dashboard", "vendas", "executivo"]
+
+  - name: dashboard_operacional_vendas
+    type: dashboard
+    maturity: medium
+    url: "https://dashboard.empresa.com/vendas-operacional"
+    description: >
+      Dashboard operacional usado pela equipe de vendas para acompanhar
+      pedidos em andamento, pipeline de vendas e métricas diárias.
+    
+    depends_on:
+      - ref('silver_pedidos')
+      - ref('silver_clientes')
+      - ref('dim_clientes')
+    
+    owner:
+      name: "Equipe Vendas"
+      email: "vendas@empresa.com"
+
+  - name: api_clientes_crm
+    type: application
+    maturity: high
+    url: "https://api.empresa.com/v1/clientes"
+    description: >
+      API REST que serve dados de clientes para o sistema CRM.
+      Fornece informações consolidadas e enriquecidas de clientes
+      incluindo histórico de pedidos e classificações.
+    
+    depends_on:
+      - ref('dim_clientes')
+      - ref('gold_visao_geral_clientes')
+    
+    owner:
+      name: "Equipe Backend"
+      email: "backend@empresa.com"
+    
+    tags: ["api", "crm", "clientes"]
+
+  - name: relatorio_financeiro_mensal
+    type: dashboard
+    maturity: high
+    url: "https://reports.empresa.com/financeiro/mensal"
+    description: >
+      Relatório financeiro mensal usado pelo departamento financeiro
+      para análises de receita, inadimplência e projeções.
+      Gerado automaticamente todo início de mês.
+    
+    depends_on:
+      - ref('agg_valor_pedidos_por_cliente_mensal')
+      - ref('fct_pedidos')
+      - ref('gold_visao_geral_clientes')
+    
+    owner:
+      name: "Equipe Financeira"
+      email: "financeiro@empresa.com"
+    
+    tags: ["relatório", "financeiro", "mensal"]
+
+  - name: ml_model_customer_segmentation
+    type: ml
+    maturity: medium
+    description: >
+      Modelo de Machine Learning para segmentação de clientes.
+      Usa dados históricos de pedidos e comportamento para
+      classificar clientes em segmentos de valor.
+    
+    depends_on:
+      - ref('gold_visao_geral_clientes')
+      - ref('silver_pedidos_incremental')
+    
+    owner:
+      name: "Equipe Data Science"
+      email: "datascience@empresa.com"
+    
+    tags: ["ml", "segmentação", "clientes"]
+
+  - name: data_export_bi_tool
+    type: application
+    maturity: high
+    description: >
+      Export diário de dados para ferramenta de BI externa.
+      Alimenta dashboards corporativos e relatórios regulatórios.
+    
+    depends_on:
+      - ref('dim_clientes')
+      - ref('fct_pedidos')
+      - ref('silver_produtos')
+    
+    owner:
+      name: "Equipe BI"
+      email: "bi@empresa.com"
+    
+    tags: ["export", "bi", "corporativo"]
