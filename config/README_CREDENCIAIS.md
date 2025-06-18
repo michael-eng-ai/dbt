@@ -4,9 +4,16 @@
 
 **Todas as credenciais foram padronizadas para facilitar o uso:**
 
+### Para Serviços Principais:
 ```
 Usuário: admin
 Senha: admin
+```
+
+### Para MinIO (Data Lake):
+```
+Usuário: minioadmin
+Senha: minioadmin
 ```
 
 ## 🗂️ Arquivos de Configuração
@@ -34,43 +41,39 @@ Host: localhost:5430
 Usuário: admin
 Senha: admin
 Database: db_source
-```
-
-### 🐘 PostgreSQL Target (Airbyte destino)
-```
-Host: localhost:5431
-Usuário: admin
-Senha: admin
-Database: db_target
-```
-
-### 🔄 Airbyte (CDC Engine)
-```
-UI: http://localhost:8001
-Usuário: admin (default no Airbyte)
-Senha: admin (default no Airbyte)
+Descrição: Banco transacional com dados simulados
 ```
 
 ### 🗃️ MinIO (Data Lake)
 ```
 Console: http://localhost:9001
 API: http://localhost:9000
-Usuário: admin
-Senha: admin
+Usuário: minioadmin
+Senha: minioadmin
+Descrição: Armazenamento S3-compatible para data lake
 ```
 
 ### 🛠️ DBT (Transformações)
 ```
-Conecta automaticamente no PostgreSQL Target
+Conecta automaticamente no PostgreSQL Source
 Usuário: admin
 Senha: admin
-Database: db_target
+Database: db_source
+Schemas: public_bronze, public_silver, public_gold
 ```
 
-### 🌐 APIs Externas
+### 📊 Dashboard Streamlit
 ```
-E-commerce API: http://localhost:8010
-CRM API: http://localhost:8011
+URL: http://localhost:8501
+Credenciais: Não requer autenticação
+Descrição: Interface web para visualização de métricas
+```
+
+### 📚 DBT Docs
+```
+URL: http://localhost:8080 (após dbt docs serve)
+Credenciais: Não requer autenticação
+Descrição: Documentação automática do projeto DBT
 ```
 
 ## 🔧 Como Usar
@@ -80,27 +83,32 @@ CRM API: http://localhost:8011
 source config/load_env.sh
 ```
 
-### 2. Iniciar Ambiente
+### 2. Iniciar Ambiente Completo
+```bash
+./start_pipeline.sh
+```
+
+### 3. Ou Iniciar Apenas Infraestrutura
 ```bash
 cd config
 docker compose up -d
 ```
 
-### 3. Verificar Serviços
+### 4. Verificar Serviços
 ```bash
-docker compose ps
+docker compose -f config/docker-compose.yml ps
 ```
 
-### 4. Testar Conexões
+### 5. Testar Conexões
 ```bash
 # PostgreSQL Source
 psql -h localhost -p 5430 -U admin -d db_source
 
-# PostgreSQL Target
-psql -h localhost -p 5431 -U admin -d db_target
-
 # DBT
-docker compose exec dbt_runner dbt debug
+cd dbt_project && dbt debug
+
+# Dashboard
+streamlit run scripts/dashboard.py
 ```
 
 ## 🛠️ Personalizações
@@ -124,31 +132,78 @@ docker compose exec dbt_runner dbt debug
 ```bash
 source config/load_env.sh
 echo $POSTGRES_SOURCE_USER
-echo $POSTGRES_TARGET_USER
+echo $MINIO_ROOT_USER
 ```
 
-### Testar Conexões de Banco
+### Testar Conexão PostgreSQL
 ```bash
-# Source
-docker compose exec postgres_source pg_isready -U admin -d db_source
+# Verificar se está rodando
+docker compose -f config/docker-compose.yml exec postgres_source pg_isready -U admin -d db_source
 
-# Target  
-docker compose exec postgres_target pg_isready -U admin -d db_target
+# Conectar manualmente
+psql -h localhost -p 5430 -U admin -d db_source
+```
+
+### Testar MinIO
+```bash
+# Verificar se está rodando
+curl -f http://localhost:9000/minio/health/live
+
+# Acessar console
+open http://localhost:9001
 ```
 
 ### Ver Logs dos Serviços
 ```bash
-docker compose logs postgres_source
-docker compose logs airbyte-server
-docker compose logs dbt_runner
+docker compose -f config/docker-compose.yml logs postgres_source
+docker compose -f config/docker-compose.yml logs minio
+docker compose -f config/docker-compose.yml logs dbt_runner
 ```
 
-## 📊 Pipeline Completo
+### Problemas Comuns
 
-1. **Source Database** → Dados originais (admin/admin)
-2. **Airbyte** → Replicação CDC (admin/admin)
-3. **Target Database** → Dados replicados (admin/admin)
-4. **DBT** → Transformações (admin/admin)
-5. **MinIO** → Data Lake (admin/admin)
+#### Porta já em uso
+```bash
+# Verificar quem está usando a porta
+lsof -i :5430
+lsof -i :9001
 
-**Todos os componentes usam as mesmas credenciais para simplicidade!** 🎯 
+# Parar containers conflitantes
+docker compose -f config/docker-compose.yml down --remove-orphans
+```
+
+#### Container não inicia
+```bash
+# Ver logs detalhados
+docker compose -f config/docker-compose.yml up --no-detach
+
+# Reiniciar serviço específico
+docker compose -f config/docker-compose.yml restart postgres_source
+```
+
+## 📊 Arquitetura Atual do Pipeline
+
+```
+[Scripts Python] → [PostgreSQL Source] → [DBT Transformações] → [Dashboard Streamlit]
+      ↓                    ↓                        ↓                     ↓
+[Inserção Contínua]  [Dados Originais]    [Bronze/Silver/Gold]    [Visualização Tempo Real]
+                            ↓
+                      [MinIO Data Lake]
+```
+
+### Fluxo de Dados:
+1. **Scripts Python** → Inserem dados simulados no PostgreSQL
+2. **PostgreSQL Source** → Armazena dados transacionais
+3. **DBT** → Transforma dados em camadas (Bronze → Silver → Gold)
+4. **MinIO** → Data Lake para armazenamento de arquivos
+5. **Dashboard** → Visualiza métricas em tempo real
+
+**Todos os componentes usam credenciais padronizadas para simplicidade!** 🎯
+
+## 📚 Documentação Relacionada
+
+- 📖 **README Principal**: `/README.md` - Visão geral completa do projeto
+- 🚀 **Guia de Inicialização**: `/README_START_PIPELINE.md` - Como usar o pipeline
+- 📊 **Capacidades DBT**: `/README_DBT.md` - Governança e funcionalidades avançadas
+- 🔧 **Ajustes Técnicos**: `/AJUSTES_DASHBOARD.md` - Configurações específicas
+- 🏗️ **Arquiteturas**: `/docs/arquiteturas_comparacao.md` - Comparação de abordagens 

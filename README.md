@@ -411,3 +411,17 @@ streamlit run scripts/dashboard.py
 ---
 
 **🎉 Pipeline DBT completo pronto para demonstração com credenciais admin/admin!**
+
+## 📚 **Documentação Complementar**
+
+- 🚀 **[Guia de Inicialização](README_START_PIPELINE.md)** - Como usar o script automatizado
+- 📊 **[Capacidades DBT](README_DBT.md)** - Governança, testes, snapshots e funcionalidades avançadas  
+- 🔧 **[Ajustes Técnicos](AJUSTES_DASHBOARD.md)** - Configurações e troubleshooting do dashboard
+- 🔐 **[Credenciais](config/README_CREDENCIAIS.md)** - Sistema centralizado de credenciais
+- 🏗️ **[Arquiteturas](docs/arquiteturas_comparacao.md)** - Comparação de diferentes abordagens
+
+**📖 Ordem de leitura recomendada:**
+1. Este README (visão geral)
+2. README_START_PIPELINE.md (execução prática)  
+3. readme-dbt.md (funcionalidades avançadas)
+4. Demais documentos conforme necessidade

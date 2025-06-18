@@ -14,47 +14,57 @@ Este documento apresenta uma demonstração completa das capacidades do DBT (Dat
 │   ├── bronze_clientes.sql
 │   ├── bronze_pedidos.sql
 │   ├── bronze_produtos.sql
-│   └── bronze_leads.sql
+│   ├── bronze_leads.sql
+│   ├── bronze_itens_pedidos.sql
+│   ├── stg_clientes.sql
+│   ├── stg_pedidos.sql
+│   └── schema.yml
 │
 ├── 🥈 Silver Layer (Cleaned & Standardized)
 │   ├── silver_clientes.sql
 │   ├── silver_pedidos.sql
 │   ├── silver_produtos.sql
-│   ├── silver_pedidos_incremental.sql (NEW)
+│   ├── silver_leads.sql
+│   ├── silver_pedidos_incremental.sql
 │   ├── dim_clientes.sql
-│   └── fct_pedidos.sql
+│   ├── fct_pedidos.sql
+│   └── schema.yml
 │
 ├── 🥇 Gold Layer (Business Metrics)
 │   ├── gold_visao_geral_clientes.sql
-│   ├── gold_metricas_avancadas_clientes.sql (NEW)
-│   ├── gold_analise_coorte.sql (NEW)
-│   ├── gold_deteccao_anomalias.sql (NEW)
-│   └── agg_valor_pedidos_por_cliente_mensal.sql
+│   ├── gold_metricas_avancadas_clientes.sql
+│   ├── gold_analise_coorte.sql
+│   ├── gold_deteccao_anomalias.sql
+│   ├── agg_valor_pedidos_por_cliente_mensal.sql
+│   └── schema.yml
 │
 ├── 📊 Seeds (Reference Data)
-│   ├── status_mapping.csv (NEW)
-│   └── categoria_produtos.csv (NEW)
+│   ├── status_mapping.csv
+│   └── categoria_produtos.csv
 │
 ├── 📸 Snapshots (SCD Type 2)
-│   └── clientes_snapshot.sql (NEW)
+│   └── clientes_snapshot.sql
 │
 ├── 🧪 Tests
 │   ├── business_rules/
-│   │   ├── test_pedido_valor_positivo.sql (NEW)
-│   │   └── test_cliente_sem_pedidos_antigos.sql (NEW)
+│   │   ├── test_pedido_valor_positivo.sql
+│   │   └── test_cliente_sem_pedidos_antigos.sql
 │   └── data_quality/
-│       └── test_email_format.sql (NEW)
+│       └── test_email_format.sql
 │
 ├── 🔧 Macros
-│   └── governance.sql (NEW)
+│   └── governance.sql
 │
-├── 📋 Sources & Tests
-│   ├── sources.yml (ENHANCED)
-│   ├── schema.yml (por camada)
-│   └── exposures.yml (NEW)
+├── 📋 Sources & Exposures
+│   ├── sources/
+│   │   └── sources.yml
+│   └── exposures.yml
 │
-└── 📚 Examples
-    └── incremental_model_example.sql
+└── � Target (Generated)
+    ├── compiled/
+    ├── run/
+    └── manifest.json
+```
 ```
 
 ## 🛡️ Governança de Dados Implementada

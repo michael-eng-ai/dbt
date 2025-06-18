@@ -132,4 +132,15 @@ PostgreSQL Source → Airbyte CDC → Data Lake
 | **CDC Crítico** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Enterprise** | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-**✅ = Essencial | ⚠️ = Opcional | ❌ = Dispensável** 
+**✅ = Essencial | ⚠️ = Opcional | ❌ = Dispensável**
+
+---
+
+## 📚 **Documentação Relacionada**
+
+- 📖 **[README Principal](../README.md)** - Visão geral do projeto atual
+- 🚀 **[Guia de Inicialização](../README_START_PIPELINE.md)** - Como executar o pipeline
+- 📊 **[Capacidades DBT](../README_DBT.md)** - Funcionalidades implementadas
+- 🔧 **[Configurações](../config/README_CREDENCIAIS.md)** - Credenciais e setup
+
+**🎯 Projeto Atual**: Implementa a **Arquitetura Near Real-Time Simples** para máxima simplicidade e demonstração efetiva das capacidades do DBT. 

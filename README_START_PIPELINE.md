@@ -4,11 +4,12 @@
 
 O script `start_pipeline.sh` foi completamente reorganizado para iniciar todo o ambiente DBT de forma automatizada, incluindo:
 
-- ✅ **PostgreSQL** (Source Database com CDC)
+- ✅ **PostgreSQL** (Source Database com dados simulados)
 - ✅ **MinIO** (Data Lake S3-compatible)
-- ✅ **DBT Runner** (Transformações de dados)
-- ✅ **Dashboard Streamlit** (Visualização em tempo real)
-- ✅ **Inserção contínua de dados** (Simulação CDC)
+- ✅ **DBT Runner** (Transformações de dados em camadas Bronze/Silver/Gold)
+- ✅ **Dashboard Streamlit** (Visualização em tempo real das métricas)
+- ✅ **Inserção contínua de dados** (Simulação de ambiente produtivo)
+- ✅ **Scheduler DBT** (Execução automática do pipeline)
 
 ## 🎯 Como Usar
 
@@ -29,11 +30,12 @@ O script `start_pipeline.sh` foi completamente reorganizado para iniciar todo o 
 
 Após a inicialização, os seguintes serviços estarão disponíveis:
 
-| Serviço | URL | Credenciais |
-|---------|-----|-------------|
-| 📊 **Dashboard Principal** | http://localhost:8501 | - |
-| 🗄️ **MinIO Console** | http://localhost:9001 | minioadmin/minioadmin |
-| 🐘 **PostgreSQL** | localhost:5430 | admin/admin |
+| Serviço | URL | Credenciais | Descrição |
+|---------|-----|-------------|-----------|
+| 📊 **Dashboard Principal** | http://localhost:8501 | - | Interface web com métricas em tempo real |
+| 🗄️ **MinIO Console** | http://localhost:9001 | minioadmin/minioadmin | Data Lake S3-compatible |
+| 🐘 **PostgreSQL** | localhost:5430 | admin/admin | Banco de dados transacional |
+| 📚 **DBT Docs** | http://localhost:8080 | - | Documentação do projeto DBT (após `dbt docs serve`) |
 
 ## 📊 Funcionalidades do Dashboard
 
@@ -47,9 +49,10 @@ Após a inicialização, os seguintes serviços estarão disponíveis:
 
 O script automaticamente inicia um processo que:
 - Insere novos clientes a cada 30 segundos
-- Gera pedidos aleatórios
-- Simula um ambiente real de CDC
-- Permite visualizar transformações em tempo real
+- Gera pedidos aleatórios com produtos
+- Simula um ambiente real de produção
+- Permite visualizar transformações DBT em tempo real
+- Alimenta as camadas Bronze → Silver → Gold automaticamente
 
 ## 📝 Comandos Úteis
 
@@ -63,19 +66,29 @@ tail -f /tmp/dashboard.log
 
 # Status dos containers
 docker compose -f config/docker-compose.yml ps
+
+# Ver logs dos serviços
+docker compose -f config/docker-compose.yml logs -f
 ```
 
 ### Controle Manual
 ```bash
 # Executar DBT manualmente
+cd dbt_project && dbt run
+
+# Executar DBT por camadas
+dbt run --models tag:bronze
+dbt run --models tag:silver
+dbt run --models tag:gold
+
+# Executar via Python
 python3 scripts/executar_dbt.py run
 
-# Ver estrutura do pipeline
-python3 scripts/visualizar_pipeline.py
+# Scheduler automático
+python3 scripts/scheduler_dbt.py
 
-# Parar processos (use os PIDs mostrados no script)
-kill <PID_DASHBOARD>
-kill <PID_INSERSOR>
+# Gerar documentação DBT
+cd dbt_project && dbt docs generate && dbt docs serve
 ```
 
 ### Limpeza
@@ -85,6 +98,9 @@ docker compose -f config/docker-compose.yml down -v
 
 # Limpar logs
 rm /tmp/insere_dados.log /tmp/dashboard.log
+
+# Limpeza completa do ambiente
+./clean_docker_environment.sh
 ```
 
 ## 🎯 Fluxo de Demonstração
@@ -132,10 +148,18 @@ psql -h localhost -p 5430 -U admin -d db_source
 
 O script fornece monitoramento contínuo mostrando:
 - ⏰ **Timestamp** atual
-- 📊 **Número de clientes** no banco
+- 📊 **Número de clientes** e pedidos no banco
 - 🐳 **Status dos containers** (PostgreSQL, MinIO, DBT)
 - 📈 **Status do dashboard** (ON/OFF)
 - 🔄 **Status do insersor** (ON/OFF)
+- 🏗️ **Progresso das transformações DBT** (Bronze/Silver/Gold)
+
+## 📚 Documentação Adicional
+
+- 📖 **Capacidades DBT**: Veja `README_DBT.md` para guia completo sobre governança e funcionalidades avançadas
+- 🔧 **Ajustes Técnicos**: Veja `AJUSTES_DASHBOARD.md` para detalhes de configuração
+- 🔐 **Credenciais**: Veja `config/README_CREDENCIAIS.md` para informações de acesso
+- 🏗️ **Arquiteturas**: Veja `docs/arquiteturas_comparacao.md` para comparação de abordagens
 
 ## 🎉 Finalização
 
@@ -146,4 +170,6 @@ Para parar toda a demonstração:
 
 ---
 
-**🎯 Objetivo**: Demonstrar um pipeline completo de dados com DBT, CDC e visualização em tempo real de forma totalmente automatizada.
+**🎯 Objetivo**: Demonstrar um pipeline completo de dados com DBT, transformações em camadas medalhão e visualização em tempo real de forma totalmente automatizada.
+
+**📚 Para funcionalidades avançadas do DBT**: Consulte `README_DBT.md` para governança, testes customizados, snapshots, macros e outras capacidades avançadas implementadas no projeto.
